@@ -1,0 +1,10 @@
+name: Recent Documents Display
+page: home
+page_path: app/(protected)/home/page.tsx
+task: Test recent documents are displayed
+steps:
+- Sign in to the application
+- Navigate to home page
+- Verify recent documents are displayed
+- Verify documents are ordered by most recent first
+expected_result: Recent documents should be listed in order

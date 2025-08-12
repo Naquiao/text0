@@ -1,0 +1,12 @@
+name: Notion Integration Connection
+page: integrations/notion
+page_path: app/(protected)/integrations/notion/page.tsx
+task: Test connecting Notion integration
+steps:
+- Sign in to the application
+- Navigate to integrations page
+- Select Notion integration
+- Click 'Connect' button
+- Complete OAuth flow
+- Verify Notion account is successfully connected
+expected_result: Notion account should be connected

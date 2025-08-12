@@ -1,0 +1,11 @@
+name: Document Text Editing
+page: docs/:doc_id
+page_path: app/(protected)/docs/[doc_id]/page.tsx
+task: Test text editing functionality
+steps:
+- Sign in to the application
+- Open an existing document
+- Make changes to the document text
+- Navigate away from the document
+- Return to the document and verify changes were saved
+expected_result: Changes to document should be saved

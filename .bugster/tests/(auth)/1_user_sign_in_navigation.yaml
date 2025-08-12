@@ -1,0 +1,9 @@
+name: User Sign In Navigation
+page: sign-in
+page_path: app/(auth)/sign-in/[[...sign-in]]/page.tsx
+task: Test navigation to sign-in page
+steps:
+- Navigate to the application
+- Click on sign-in link or button
+- Verify sign-in page is displayed with authentication options
+expected_result: User should be presented with sign-in options

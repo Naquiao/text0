@@ -1,0 +1,11 @@
+name: Create New Document
+page: home
+page_path: app/(protected)/home/page.tsx
+task: Test creating a new document
+steps:
+- Sign in to the application
+- Navigate to home page
+- Click on 'New Document' button
+- Verify new document is created
+- Verify user is redirected to the editor for the new document
+expected_result: New document should be created and opened

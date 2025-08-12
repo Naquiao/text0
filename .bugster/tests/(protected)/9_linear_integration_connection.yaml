@@ -1,0 +1,12 @@
+name: Linear Integration Connection
+page: integrations/linear
+page_path: app/(protected)/integrations/linear/page.tsx
+task: Test connecting Linear integration
+steps:
+- Sign in to the application
+- Navigate to integrations page
+- Select Linear integration
+- Click 'Connect' button
+- Complete OAuth flow
+- Verify Linear account is successfully connected
+expected_result: Linear account should be connected
