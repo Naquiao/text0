@@ -1,0 +1,11 @@
+name: Landing Page Display
+page: landing
+page_path: app/page.tsx
+task: Test landing page elements display
+steps:
+- Navigate to the application root URL
+- Verify hero section is displayed
+- Verify animated elements are working
+- Verify navigation links are accessible
+- Verify call-to-action buttons are functional
+expected_result: Landing page should display all marketing elements

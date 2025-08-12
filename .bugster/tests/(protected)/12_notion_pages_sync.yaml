@@ -1,0 +1,12 @@
+name: Notion Pages Sync
+page: integrations/notion
+page_path: app/(protected)/integrations/notion/page.tsx
+task: Test syncing Notion pages
+steps:
+- Sign in to the application
+- Navigate to Notion integration page
+- Ensure Notion is connected
+- Click 'Sync' button
+- Verify sync process completes
+- Verify pages appear in references
+expected_result: Notion pages should be synced as references

@@ -1,0 +1,11 @@
+name: Search Functionality
+page: home
+page_path: app/(protected)/home/page.tsx
+task: Test document search functionality
+steps:
+- Sign in to the application
+- Navigate to home page
+- Open search command (Ctrl+K or search button)
+- Enter search query for existing document
+- Verify search results display matching documents
+expected_result: Search results should match query

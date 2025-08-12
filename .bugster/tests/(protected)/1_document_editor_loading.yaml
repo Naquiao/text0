@@ -1,0 +1,11 @@
+name: Document Editor Loading
+page: docs/:doc_id
+page_path: app/(protected)/docs/[doc_id]/page.tsx
+task: Test loading an existing document
+steps:
+- Sign in to the application
+- Navigate to the home page
+- Select an existing document from the list
+- Verify document content loads correctly
+- Verify text editor is functional
+expected_result: Document content should load and be editable

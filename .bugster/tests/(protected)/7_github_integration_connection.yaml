@@ -1,0 +1,12 @@
+name: GitHub Integration Connection
+page: integrations/github
+page_path: app/(protected)/integrations/github/page.tsx
+task: Test connecting GitHub integration
+steps:
+- Sign in to the application
+- Navigate to integrations page
+- Select GitHub integration
+- Click 'Connect' button
+- Complete OAuth flow
+- Verify GitHub account is successfully connected
+expected_result: GitHub account should be connected

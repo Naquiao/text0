@@ -1,0 +1,12 @@
+name: GitHub Repository Sync
+page: integrations/github
+page_path: app/(protected)/integrations/github/page.tsx
+task: Test syncing GitHub repositories
+steps:
+- Sign in to the application
+- Navigate to GitHub integration page
+- Ensure GitHub is connected
+- Click 'Sync' button
+- Verify sync process completes
+- Verify repositories appear in references
+expected_result: GitHub repositories should be synced as references

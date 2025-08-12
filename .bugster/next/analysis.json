@@ -1,0 +1,1065 @@
+{
+  "metadata": {
+    "timestamp": 1755033330.6499655,
+    "version": 2,
+    "git": {
+      "branch": "bugster/tests/onboarding-20250812-211526",
+      "commit": "62920e61935e8ec1192e3eb0e4fec8a559b860f7"
+    }
+  },
+  "data": {
+    "framework": {
+      "id": "next",
+      "name": "Next.js",
+      "dir_path": "/home/bugsteruser/app/repo/"
+    },
+    "router_type": "app",
+    "stats": {
+      "fileCount": 151,
+      "routeCount": 10,
+      "apiRouteCount": 30,
+      "layoutCount": 2
+    },
+    "layouts": [
+      {
+        "name": "async",
+        "relative_file_path": "app/(protected)/layout.tsx",
+        "relative_dir_path": "app/(protected)",
+        "content": "import { DeleteDialog } from \"@/components/delete-dialog\";\nimport { MinimalIntegrationSidebar } from \"@/components/integration-sidebar\";\nimport { SidebarProvider } from \"@/components/ui/sidebar\";\nimport { getSecureUser } from \"@/lib/auth/server\";\nimport {\n\tDOCUMENT_KEY,\n\ttype Document,\n\tUSER_DOCUMENTS_KEY,\n\tredis,\n} from \"@/lib/redis\";\nimport { redirect } from \"next/navigation\";\nimport { AnnouncementBarWrapper } from \"../components/announcement-bar\";\nimport { DocumentContextProvider } from \"../context/documentContext\";\n\nexport default async function ProtectedLayout({\n\tchildren,\n}: Readonly<{\n\tchildren: React.ReactNode;\n}>) {\n\tconst user = await getSecureUser();\n\n\tif (!user) {\n\t\tredirect(\"/sign-in\");\n\t}\n\n\tconst documentsWithIds = await redis.zrange<string[]>(\n\t\tUSER_DOCUMENTS_KEY(user.id),\n\t\t0,\n\t\t-1,\n\t);\n\tconst _documents = await Promise.all(\n\t\tdocumentsWithIds.map((documentId) =>\n\t\t\tredis.hgetall<Document>(DOCUMENT_KEY(documentId)),\n\t\t),\n\t);\n\tconst documents = _documents\n\t\t.map((document) => document as Document)\n\t\t.sort(\n\t\t\t(a, b) =>\n\t\t\t\tnew Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),\n\t\t);\n\n\treturn (\n\t\t<DocumentContextProvider>\n\t\t\t<SidebarProvider\n\t\t\t\tdefaultOpen={true}\n\t\t\t\tclassName=\"grid h-dvh grid-rows-[auto_1fr]\"\n\t\t\t>\n\t\t\t\t<AnnouncementBarWrapper />\n\t\t\t\t<div className=\"row-span-2 flex\">\n\t\t\t\t\t<MinimalIntegrationSidebar documents={documents} />\n\t\t\t\t\t<main className=\"relative flex flex-1 overflow-auto\">\n\t\t\t\t\t\t<div className=\"grid flex-1\">{children}</div>\n\t\t\t\t\t</main>\n\t\t\t\t\t<DeleteDialog />\n\t\t\t\t</div>\n\t\t\t</SidebarProvider>\n\t\t</DocumentContextProvider>\n\t);\n}\n",
+        "components": [
+          "MinimalIntegrationSidebar",
+          "AnnouncementBarWrapper",
+          "DeleteDialog",
+          "DocumentContextProvider",
+          "Document",
+          "SidebarProvider"
+        ]
+      },
+      {
+        "name": "function",
+        "relative_file_path": "app/layout.tsx",
+        "relative_dir_path": "app",
+        "content": "import \"./globals.css\";\nimport { TourProvider } from \"@/components/tour\";\nimport { Toaster } from \"@/components/ui/sonner\";\nimport { Analytics } from \"@vercel/analytics/react\";\nimport type { Metadata } from \"next\";\nimport { Geist, Geist_Mono } from \"next/font/google\";\nimport { PleaseStarUsOnGitHub } from \"./components/PleaseStarUsOnGitHub\";\nimport { Providers } from \"./providers\";\n\nconst geistSans = Geist({\n\tvariable: \"--font-geist-sans\",\n\tsubsets: [\"latin\"],\n});\n\nconst geistMono = Geist_Mono({\n\tvariable: \"--font-geist-mono\",\n\tsubsets: [\"latin\"],\n});\n\nexport const metadata: Metadata = {\n\ttitle: \"Text0 \u2013 The AI-Native Personal Text Editor\",\n\tdescription:\n\t\t\"Text0 is your personal thinking partner. It completes your thoughts, remembers your context, and adapts the interface as you write. Built for developers, powered by AI, and integrated with your tools. This isn't just a text editor \u2014 it's your second brain.\",\n\tkeywords: [\n\t\t\"Text0\",\n\t\t\"AI text editor\",\n\t\t\"Generative UI\",\n\t\t\"Second brain\",\n\t\t\"Memory-aware writing\",\n\t\t\"GPT-4o text editor\",\n\t\t\"AI-native interface\",\n\t\t\"Personal AI workspace\",\n\t\t\"Developer tools\",\n\t\t\"Obsidian alternative\",\n\t\t\"Next.js text editor\",\n\t\t\"Context-aware autocomplete\",\n\t\t\"Adaptive UI\",\n\t\t\"Railly Hugo\",\n\t\t\"Anthony Cueva\",\n\t],\n\tapplicationName: \"Text0\",\n\tauthors: [\n\t\t{\n\t\t\tname: \"Railly Hugo\",\n\t\t\turl: \"https://railly.dev\",\n\t\t},\n\t\t{\n\t\t\tname: \"Anthony Cueva\",\n\t\t\turl: \"https://cueva.io\",\n\t\t},\n\t],\n\tcreator: \"Railly Hugo\",\n\tpublisher: \"Crafter Station\",\n\tmetadataBase: new URL(\"https://text0.dev\"),\n\topenGraph: {\n\t\ttype: \"website\",\n\t\ttitle: \"Text0 \u2013 The AI-Native Personal Text Editor\",\n\t\tdescription:\n\t\t\t\"A text editor that listens, completes, remembers. AI-native, voice-aware, memory-driven \u2014 built to match your flow.\",\n\t\turl: \"https://text0.dev\",\n\t\timages: [\n\t\t\t{\n\t\t\t\turl: \"https://text0.dev/og.png\",\n\t\t\t\twidth: 1200,\n\t\t\t\theight: 630,\n\t\t\t\talt: \"Text0 \u2013 Built by Railly Hugo and Anthony Cueva\",\n\t\t\t},\n\t\t],\n\t},\n\ttwitter: {\n\t\tcard: \"summary_large_image\",\n\t\ttitle: \"Text0 \u2013 The AI-Native Text Editor That Thinks With You\",\n\t\tdescription:\n\t\t\t\"More than autocomplete. Text0 remembers your context, adapts the interface, and integrates your tools into your flow. Write with AI that feels personal.\",\n\t\tcreator: \"@raillyhugo, @cuevaio\",\n\t\timages: [\"https://text0.dev/og.png\"],\n\t},\n\tthemeColor: \"#000000\",\n\ticons: {\n\t\ticon: \"/icon.svg\",\n\t\tapple: \"/apple-touch-icon.png\",\n\t},\n\tcategory: \"technology\",\n};\n\nexport default function RootLayout({\n\tchildren,\n}: {\n\tchildren: React.ReactNode;\n}) {\n\treturn (\n\t\t<html lang=\"en\" suppressHydrationWarning>\n\t\t\t<body\n\t\t\t\tclassName={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}\n\t\t\t>\n\t\t\t\t<PleaseStarUsOnGitHub />\n\t\t\t\t<Providers>\n\t\t\t\t\t<TourProvider>{children}</TourProvider>\n\t\t\t\t\t<Toaster />\n\t\t\t\t</Providers>\n\t\t\t\t<Analytics />\n\t\t\t</body>\n\t\t</html>\n\t);\n}\n",
+        "components": [
+          "Providers",
+          "TourProvider",
+          "Toaster",
+          "Analytics",
+          "PleaseStarUsOnGitHub"
+        ]
+      }
+    ],
+    "routes": [
+      {
+        "routePath": "/(auth)/sign-in/:[...sign-in]",
+        "relativeFilePath": "app/(auth)/sign-in/[[...sign-in]]/page.tsx",
+        "layoutChain": [
+          "function"
+        ],
+        "components": [
+          "InvertedT0Logo",
+          "SignIn",
+          "AnnouncementBarWrapper"
+        ],
+        "hasParams": true,
+        "hasForm": false,
+        "hooks": [],
+        "eventHandlers": [],
+        "featureFlags": []
+      },
+      {
+        "routePath": "/(protected)/docs/:doc_id",
+        "relativeFilePath": "app/(protected)/docs/[doc_id]/page.tsx",
+        "layoutChain": [
+          "async",
+          "function"
+        ],
+        "components": [
+          "TextEditor"
+        ],
+        "hasParams": true,
+        "hasForm": false,
+        "hooks": [],
+        "eventHandlers": [],
+        "featureFlags": []
+      },
+      {
+        "routePath": "/(protected)/home",
+        "relativeFilePath": "app/(protected)/home/page.tsx",
+        "layoutChain": [
+          "async",
+          "function"
+        ],
+        "components": [
+          "SearchCommand",
+          "HomeTour",
+          "Reference",
+          "AppHeader",
+          "Document",
+          "AddReference",
+          "QuickActionButton",
+          "RecentFilesCard",
+          "StatusBar",
+          "NewDoc"
+        ],
+        "hasParams": false,
+        "hasForm": false,
+        "hooks": [],
+        "eventHandlers": [],
+        "featureFlags": []
+      },
+      {
+        "routePath": "/(protected)/integrations/discord",
+        "relativeFilePath": "app/(protected)/integrations/discord/page.tsx",
+        "layoutChain": [
+          "async",
+          "function"
+        ],
+        "components": [
+          "CardTitle",
+          "DiscordIcon",
+          "Card",
+          "DiscordUser",
+          "CardContent",
+          "DiscordGuild",
+          "Badge",
+          "Link",
+          "Button",
+          "CheckCircle2",
+          "CardHeader"
+        ],
+        "hasParams": false,
+        "hasForm": false,
+        "hooks": [
+          "useUser",
+          "useState",
+          "useEffect"
+        ],
+        "eventHandlers": [],
+        "featureFlags": []
+      },
+      {
+        "routePath": "/(protected)/integrations/github",
+        "relativeFilePath": "app/(protected)/integrations/github/page.tsx",
+        "layoutChain": [
+          "async",
+          "function"
+        ],
+        "components": [
+          "CardTitle",
+          "RefreshCw",
+          "GitHubRepo",
+          "Card",
+          "GithubIcon",
+          "GitHubUser",
+          "CardContent",
+          "Badge",
+          "Link",
+          "Button",
+          "CheckCircle2",
+          "GitHubNotification",
+          "CardHeader"
+        ],
+        "hasParams": false,
+        "hasForm": false,
+        "hooks": [
+          "useUser",
+          "useState",
+          "useEffect"
+        ],
+        "eventHandlers": [
+          "handleDisconnect",
+          "handleSync"
+        ],
+        "featureFlags": []
+      },
+      {
+        "routePath": "/(protected)/integrations/linear",
+        "relativeFilePath": "app/(protected)/integrations/linear/page.tsx",
+        "layoutChain": [
+          "async",
+          "function"
+        ],
+        "components": [
+          "CardTitle",
+          "LinearUser",
+          "RefreshCw",
+          "LinearTeam",
+          "Card",
+          "Users",
+          "LinearIssue",
+          "CardContent",
+          "Badge",
+          "Link",
+          "FileText",
+          "LinearIcon",
+          "Button",
+          "CheckCircle2",
+          "CardHeader"
+        ],
+        "hasParams": false,
+        "hasForm": false,
+        "hooks": [
+          "useUser",
+          "useState",
+          "useEffect"
+        ],
+        "eventHandlers": [
+          "handleSync"
+        ],
+        "featureFlags": []
+      },
+      {
+        "routePath": "/(protected)/integrations/notion",
+        "relativeFilePath": "app/(protected)/integrations/notion/page.tsx",
+        "layoutChain": [
+          "async",
+          "function"
+        ],
+        "components": [
+          "CardTitle",
+          "NotionPage",
+          "RefreshCw",
+          "NotionIcon",
+          "NotionUser",
+          "NotionDatabase",
+          "Card",
+          "CardContent",
+          "Badge",
+          "Link",
+          "Button",
+          "CheckCircle2",
+          "Calendar",
+          "CardHeader"
+        ],
+        "hasParams": false,
+        "hasForm": false,
+        "hooks": [
+          "useUser",
+          "useState",
+          "useEffect"
+        ],
+        "eventHandlers": [
+          "handleDisconnect",
+          "handleSync"
+        ],
+        "featureFlags": []
+      },
+      {
+        "routePath": "/(protected)/integrations",
+        "relativeFilePath": "app/(protected)/integrations/page.tsx",
+        "layoutChain": [
+          "async",
+          "function"
+        ],
+        "components": [
+          "CardTitle",
+          "Loader2",
+          "Plus",
+          "Card",
+          "TabsList",
+          "Input",
+          "Settings",
+          "CardContent",
+          "Badge",
+          "AlertCircle",
+          "Link",
+          "Tabs",
+          "TabsContent",
+          "Button",
+          "CheckCircle2",
+          "TabsTrigger",
+          "CardDescription",
+          "CardHeader"
+        ],
+        "hasParams": false,
+        "hasForm": false,
+        "hooks": [
+          "useUser",
+          "useState"
+        ],
+        "eventHandlers": [
+          "handleDisconnect"
+        ],
+        "featureFlags": []
+      },
+      {
+        "routePath": "/(protected)/references",
+        "relativeFilePath": "app/(protected)/references/page.tsx",
+        "layoutChain": [
+          "async",
+          "function"
+        ],
+        "components": [
+          "CardTitle",
+          "Card",
+          "Reference",
+          "BrainIcon",
+          "FileText",
+          "CardContent",
+          "Button",
+          "ArrowRight",
+          "AddReference",
+          "CardHeader"
+        ],
+        "hasParams": false,
+        "hasForm": false,
+        "hooks": [],
+        "eventHandlers": [],
+        "featureFlags": []
+      },
+      {
+        "routePath": "/",
+        "relativeFilePath": "app/page.tsx",
+        "layoutChain": [
+          "function"
+        ],
+        "components": [
+          "AnimatedPrompt",
+          "AnimatedBadge",
+          "TextScramble",
+          "AnnouncementBarWrapper",
+          "DiscordIcon",
+          "GithubIcon",
+          "T0Keycap",
+          "XIcon",
+          "Image"
+        ],
+        "hasParams": false,
+        "hasForm": false,
+        "hooks": [],
+        "eventHandlers": [],
+        "featureFlags": []
+      }
+    ],
+    "api_routes": [
+      {
+        "routePath": "/api/chat",
+        "relativeFilePath": "app/api/chat/route.ts",
+        "methods": [
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "vector",
+          "anthropic",
+          "google",
+          "openai",
+          "xai",
+          "type",
+          "Message",
+          "type",
+          "StreamTextOnErrorCallback",
+          "type",
+          "StreamTextOnFinishCallback",
+          "type",
+          "StreamTextResult",
+          "streamText",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/completion",
+        "relativeFilePath": "app/api/completion/route.ts",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "vector",
+          "type",
+          "LanguageModelV1",
+          "streamText",
+          "anthropic",
+          "google",
+          "groq",
+          "openai",
+          "xai",
+          "getSecureSession"
+        ]
+      },
+      {
+        "routePath": "/api/discord/data",
+        "relativeFilePath": "app/api/discord/data/route.ts",
+        "methods": [
+          "GET"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/docs/:doc_id",
+        "relativeFilePath": "app/api/docs/[doc_id]/route.ts",
+        "methods": [
+          "PATCH"
+        ],
+        "hasValidation": true,
+        "deps": [
+          "getSecureSession",
+          "DOCUMENT_KEY",
+          "type",
+          "Document",
+          "redis",
+          "revalidatePath",
+          "NextResponse",
+          "z"
+        ]
+      },
+      {
+        "routePath": "/api/github/data",
+        "relativeFilePath": "app/api/github/data/route.ts",
+        "methods": [
+          "GET"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/github/sync",
+        "relativeFilePath": "app/api/github/sync/route.ts",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "nanoid",
+          "REFERENCE_KEY",
+          "type",
+          "Reference",
+          "USER_REFERENCES_KEY",
+          "redis",
+          "vector",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "RecursiveCharacterTextSplitter",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/linear/data",
+        "relativeFilePath": "app/api/linear/data/route.ts",
+        "methods": [
+          "GET"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "LinearClient",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/linear/sync",
+        "relativeFilePath": "app/api/linear/sync/route.ts",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "nanoid",
+          "REFERENCE_KEY",
+          "type",
+          "Reference",
+          "USER_REFERENCES_KEY",
+          "redis",
+          "vector",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "LinearClient",
+          "RecursiveCharacterTextSplitter",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/notion/data",
+        "relativeFilePath": "app/api/notion/data/route.ts",
+        "methods": [
+          "GET"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/notion/sync",
+        "relativeFilePath": "app/api/notion/sync/route.ts",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "nanoid",
+          "REFERENCE_KEY",
+          "type",
+          "Reference",
+          "USER_REFERENCES_KEY",
+          "redis",
+          "vector",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "RecursiveCharacterTextSplitter",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/references",
+        "relativeFilePath": "app/api/references/route.ts",
+        "methods": [
+          "GET"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "REFERENCE_KEY",
+          "type",
+          "Reference",
+          "USER_REFERENCES_KEY",
+          "redis",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/text-modification",
+        "relativeFilePath": "app/api/text-modification/route.ts",
+        "methods": [
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "openai",
+          "streamText",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/transcribe",
+        "relativeFilePath": "app/api/transcribe/route.ts",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "elevenlabs",
+          "experimental_transcribe",
+          "as",
+          "transcribe",
+          "type",
+          "NextRequest",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/uploadthing",
+        "relativeFilePath": "app/api/uploadthing/route.ts",
+        "methods": [],
+        "hasValidation": false,
+        "deps": [
+          "createRouteHandler",
+          "ourFileRouter"
+        ]
+      },
+      {
+        "routePath": "/api/chat",
+        "relativeFilePath": "app/api/chat/route.ts",
+        "methods": [
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "vector",
+          "anthropic",
+          "google",
+          "openai",
+          "xai",
+          "type",
+          "Message",
+          "type",
+          "StreamTextOnErrorCallback",
+          "type",
+          "StreamTextOnFinishCallback",
+          "type",
+          "StreamTextResult",
+          "streamText",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/completion",
+        "relativeFilePath": "app/api/completion/route.ts",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "vector",
+          "type",
+          "LanguageModelV1",
+          "streamText",
+          "anthropic",
+          "google",
+          "groq",
+          "openai",
+          "xai",
+          "getSecureSession"
+        ]
+      },
+      {
+        "routePath": "/api/discord/data",
+        "relativeFilePath": "app/api/discord/data/route.ts",
+        "methods": [
+          "GET"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/docs/:doc_id",
+        "relativeFilePath": "app/api/docs/[doc_id]/route.ts",
+        "methods": [
+          "PATCH"
+        ],
+        "hasValidation": true,
+        "deps": [
+          "getSecureSession",
+          "DOCUMENT_KEY",
+          "type",
+          "Document",
+          "redis",
+          "revalidatePath",
+          "NextResponse",
+          "z"
+        ]
+      },
+      {
+        "routePath": "/api/github/data",
+        "relativeFilePath": "app/api/github/data/route.ts",
+        "methods": [
+          "GET"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/github/sync",
+        "relativeFilePath": "app/api/github/sync/route.ts",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "nanoid",
+          "REFERENCE_KEY",
+          "type",
+          "Reference",
+          "USER_REFERENCES_KEY",
+          "redis",
+          "vector",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "RecursiveCharacterTextSplitter",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/linear/data",
+        "relativeFilePath": "app/api/linear/data/route.ts",
+        "methods": [
+          "GET"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "LinearClient",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/linear/sync.ts",
+        "relativeFilePath": "app/api/linear/sync.ts",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "nanoid",
+          "REFERENCE_KEY",
+          "type",
+          "Reference",
+          "USER_REFERENCES_KEY",
+          "redis",
+          "vector",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "LinearClient",
+          "RecursiveCharacterTextSplitter",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/linear/sync",
+        "relativeFilePath": "app/api/linear/sync/route.ts",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "nanoid",
+          "REFERENCE_KEY",
+          "type",
+          "Reference",
+          "USER_REFERENCES_KEY",
+          "redis",
+          "vector",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "LinearClient",
+          "RecursiveCharacterTextSplitter",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/notion/data",
+        "relativeFilePath": "app/api/notion/data/route.ts",
+        "methods": [
+          "GET"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/notion/sync",
+        "relativeFilePath": "app/api/notion/sync/route.ts",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "nanoid",
+          "REFERENCE_KEY",
+          "type",
+          "Reference",
+          "USER_REFERENCES_KEY",
+          "redis",
+          "vector",
+          "type",
+          "OauthAccessToken",
+          "createClerkClient",
+          "ClerkAPIResponseError",
+          "RecursiveCharacterTextSplitter",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/references",
+        "relativeFilePath": "app/api/references/route.ts",
+        "methods": [
+          "GET"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "REFERENCE_KEY",
+          "type",
+          "Reference",
+          "USER_REFERENCES_KEY",
+          "redis",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/text-modification",
+        "relativeFilePath": "app/api/text-modification/route.ts",
+        "methods": [
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "openai",
+          "streamText",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/transcribe",
+        "relativeFilePath": "app/api/transcribe/route.ts",
+        "methods": [
+          "GET",
+          "POST"
+        ],
+        "hasValidation": false,
+        "deps": [
+          "elevenlabs",
+          "experimental_transcribe",
+          "as",
+          "transcribe",
+          "type",
+          "NextRequest",
+          "NextResponse"
+        ]
+      },
+      {
+        "routePath": "/api/uploadthing/core.ts",
+        "relativeFilePath": "app/api/uploadthing/core.ts",
+        "methods": [],
+        "hasValidation": false,
+        "deps": [
+          "getSecureSession",
+          "nanoid",
+          "REFERENCE_KEY",
+          "type",
+          "Reference",
+          "USER_REFERENCES_KEY",
+          "redis",
+          "tasks",
+          "type",
+          "FileRouter",
+          "createUploadthing",
+          "UploadThingError"
+        ]
+      },
+      {
+        "routePath": "/api/uploadthing",
+        "relativeFilePath": "app/api/uploadthing/route.ts",
+        "methods": [],
+        "hasValidation": false,
+        "deps": [
+          "createRouteHandler",
+          "ourFileRouter"
+        ]
+      }
+    ],
+    "all_paths": [
+      "actions/add-website-reference.ts",
+      "actions/docs.ts",
+      "actions/websites.ts",
+      "app/(auth)/sign-in/[[...sign-in]]/page.tsx",
+      "app/(protected)/components/data-table.tsx",
+      "app/(protected)/components/file-card.tsx",
+      "app/(protected)/components/files-grid.tsx",
+      "app/(protected)/components/table-columns.tsx",
+      "app/(protected)/docs/[doc_id]/loading.tsx",
+      "app/(protected)/docs/[doc_id]/page.tsx",
+      "app/(protected)/docs/[doc_id]/text-editor/ai-chat-sidebar.tsx",
+      "app/(protected)/docs/[doc_id]/text-editor/ai-chat-trigger.tsx",
+      "app/(protected)/docs/[doc_id]/text-editor/index.tsx",
+      "app/(protected)/docs/[doc_id]/text-editor/model-selector.tsx",
+      "app/(protected)/docs/[doc_id]/text-editor/reference-selector.tsx",
+      "app/(protected)/docs/[doc_id]/text-editor/text-to-speech.tsx",
+      "app/(protected)/docs/[doc_id]/text-editor/voice-transcription.tsx",
+      "app/(protected)/docs/[doc_id]/tour.tsx",
+      "app/(protected)/home/new-doc.tsx",
+      "app/(protected)/home/page.tsx",
+      "app/(protected)/home/search-command.tsx",
+      "app/(protected)/home/tour.tsx",
+      "app/(protected)/integrations/discord/page.tsx",
+      "app/(protected)/integrations/github/page.tsx",
+      "app/(protected)/integrations/linear/page.tsx",
+      "app/(protected)/integrations/notion/page.tsx",
+      "app/(protected)/integrations/page.tsx",
+      "app/(protected)/layout.tsx",
+      "app/(protected)/references/page.tsx",
+      "app/actions/textToSpeech.ts",
+      "app/actions/transcribe.ts",
+      "app/api/chat/route.ts",
+      "app/api/completion/route.ts",
+      "app/api/discord/data/route.ts",
+      "app/api/docs/[doc_id]/route.ts",
+      "app/api/github/data/route.ts",
+      "app/api/github/sync/route.ts",
+      "app/api/linear/data/route.ts",
+      "app/api/linear/sync.ts",
+      "app/api/linear/sync/route.ts",
+      "app/api/notion/data/route.ts",
+      "app/api/notion/sync/route.ts",
+      "app/api/references/route.ts",
+      "app/api/text-modification/route.ts",
+      "app/api/transcribe/route.ts",
+      "app/api/uploadthing/core.ts",
+      "app/api/uploadthing/route.ts",
+      "app/components/PleaseStarUsOnGitHub.tsx",
+      "app/components/announcement-bar/AnnouncementBar.tsx",
+      "app/components/announcement-bar/AnnouncementBarWrapper.tsx",
+      "app/components/announcement-bar/index.ts",
+      "app/context/documentContext.tsx",
+      "app/layout.tsx",
+      "app/not-found.tsx",
+      "app/page.tsx",
+      "app/providers.tsx",
+      "components/add-reference.tsx",
+      "components/animated-badge.tsx",
+      "components/animated-prompt.tsx",
+      "components/command-menu.tsx",
+      "components/delete-dialog.tsx",
+      "components/editable-document-name.tsx",
+      "components/home/app-header.tsx",
+      "components/home/quick-action-button.tsx",
+      "components/home/recent-files-card.tsx",
+      "components/home/status-bar.tsx",
+      "components/inline-diff-view.tsx",
+      "components/integration-sidebar.tsx",
+      "components/new-document-button.tsx",
+      "components/t0-keycap.tsx",
+      "components/text-diff-view.tsx",
+      "components/text-scramble.tsx",
+      "components/text-selection-menu.tsx",
+      "components/tour.tsx",
+      "components/ui/alert-dialog.tsx",
+      "components/ui/alert.tsx",
+      "components/ui/anthropic-logo.tsx",
+      "components/ui/badge.tsx",
+      "components/ui/bounce-spinner.tsx",
+      "components/ui/button.tsx",
+      "components/ui/card.tsx",
+      "components/ui/checkbox.tsx",
+      "components/ui/collapsible.tsx",
+      "components/ui/command.tsx",
+      "components/ui/dialog.tsx",
+      "components/ui/drawer.tsx",
+      "components/ui/dropdown-menu.tsx",
+      "components/ui/file-upload.tsx",
+      "components/ui/google-logo.tsx",
+      "components/ui/icons/crafter.tsx",
+      "components/ui/icons/discord.tsx",
+      "components/ui/icons/github.tsx",
+      "components/ui/icons/gmail.tsx",
+      "components/ui/icons/google-calendar.tsx",
+      "components/ui/icons/google-docs.tsx",
+      "components/ui/icons/index.ts",
+      "components/ui/icons/linear.tsx",
+      "components/ui/icons/ms-teams.tsx",
+      "components/ui/icons/notion.tsx",
+      "components/ui/icons/slack.tsx",
+      "components/ui/icons/spinner.tsx",
+      "components/ui/icons/t0-logo.tsx",
+      "components/ui/icons/vercel.tsx",
+      "components/ui/icons/x-icon.tsx",
+      "components/ui/input.tsx",
+      "components/ui/label.tsx",
+      "components/ui/llama-logo.tsx",
+      "components/ui/menubar.tsx",
+      "components/ui/openai-logo.tsx",
+      "components/ui/pagination.tsx",
+      "components/ui/popover.tsx",
+      "components/ui/progress.tsx",
+      "components/ui/scroll-area.tsx",
+      "components/ui/select.tsx",
+      "components/ui/separator.tsx",
+      "components/ui/sheet.tsx",
+      "components/ui/sidebar.tsx",
+      "components/ui/skeleton.tsx",
+      "components/ui/sonner.tsx",
+      "components/ui/switch.tsx",
+      "components/ui/table.tsx",
+      "components/ui/tabs.tsx",
+      "components/ui/textarea.tsx",
+      "components/ui/toggle.tsx",
+      "components/ui/tooltip.tsx",
+      "components/ui/xai-logo.tsx",
+      "hooks/use-debounced-callback.ts",
+      "hooks/use-document-references.ts",
+      "hooks/use-media-query.ts",
+      "hooks/use-mobile.ts",
+      "hooks/use-model.ts",
+      "hooks/use-reference-processing.ts",
+      "hooks/use-references.ts",
+      "hooks/use-selected-references.ts",
+      "lib/auth/server.ts",
+      "lib/discord/invitation.ts",
+      "lib/download.ts",
+      "lib/firecrawl.ts",
+      "lib/local-cookies.ts",
+      "lib/models.ts",
+      "lib/nanoid.ts",
+      "lib/redis.ts",
+      "lib/tour-constants.ts",
+      "lib/trigger-hooks.ts",
+      "lib/uploadthing.ts",
+      "lib/utils.ts",
+      "lib/vector.ts",
+      "middleware.ts",
+      "next.config.ts",
+      "trigger.config.ts",
+      "trigger/process-document.ts"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+name: All Integrations Display
+page: integrations
+page_path: app/(protected)/integrations/page.tsx
+task: Test all integrations are displayed
+steps:
+- Sign in to the application
+- Navigate to integrations page
+- Verify all integration options are displayed (GitHub, Discord, Linear, Notion)
+- Verify connection status for each integration is shown correctly
+expected_result: All available integrations should be listed

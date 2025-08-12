@@ -1,0 +1,12 @@
+name: Add Reference Functionality
+page: references
+page_path: app/(protected)/references/page.tsx
+task: Test adding a new reference
+steps:
+- Sign in to the application
+- Navigate to references page
+- Click 'Add Reference' button
+- Fill in reference details
+- Submit the form
+- Verify new reference appears in the list
+expected_result: New reference should be added to the list

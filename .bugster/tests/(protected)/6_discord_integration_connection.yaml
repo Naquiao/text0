@@ -1,0 +1,12 @@
+name: Discord Integration Connection
+page: integrations/discord
+page_path: app/(protected)/integrations/discord/page.tsx
+task: Test connecting Discord integration
+steps:
+- Sign in to the application
+- Navigate to integrations page
+- Select Discord integration
+- Click 'Connect' button
+- Complete OAuth flow
+- Verify Discord account is successfully connected
+expected_result: Discord account should be connected

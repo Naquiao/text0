@@ -1,0 +1,12 @@
+name: Linear Issues Sync
+page: integrations/linear
+page_path: app/(protected)/integrations/linear/page.tsx
+task: Test syncing Linear issues
+steps:
+- Sign in to the application
+- Navigate to Linear integration page
+- Ensure Linear is connected
+- Click 'Sync' button
+- Verify sync process completes
+- Verify issues appear in references
+expected_result: Linear issues should be synced as references

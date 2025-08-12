@@ -1,0 +1,9 @@
+name: Protected Route Redirection
+page: home
+page_path: app/(protected)/home/page.tsx
+task: Test unauthenticated access to protected route
+steps:
+- Ensure user is not signed in
+- Attempt to navigate to home page directly
+- Verify user is redirected to sign-in page
+expected_result: User should be redirected to sign-in page

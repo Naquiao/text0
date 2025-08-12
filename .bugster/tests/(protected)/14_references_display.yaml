@@ -1,0 +1,10 @@
+name: References Display
+page: references
+page_path: app/(protected)/references/page.tsx
+task: Test references are displayed
+steps:
+- Sign in to the application
+- Navigate to references page
+- Verify references from all connected integrations are displayed
+- Verify reference details are shown correctly
+expected_result: All references should be listed
